@@ -1,0 +1,215 @@
+---
+title: "Databases w/ R"
+output: html_notebook
+---
+
+```{r}
+library(DBI)
+library(odbc)
+
+con <- dbConnect(odbc(), 
+                      Driver = "SQL Server", 
+                      Server = "localhost\\SQLEXPRESS", 
+                      Database = "master", 
+                      Trusted_Connection = "True")
+```
+
+
+```{r}
+dbGetQuery(con, "Select Top 10 * From flights")
+```
+
+```{sql, connection = con}
+Select top 10 * from "flights"
+```
+
+## dplyr & dbplyr
+
+Install `dbplyr`, along with `dplyr`, to use interact with databases
+
+```{r, eval = FALSE}
+devtools::install_github("tidyverse/dbplyr")
+```
+
+```{r}
+library(dplyr)
+library(dbplyr)
+
+```
+
+
+```{r}
+flights <- tbl(con, "flights")
+```
+
+```{r}
+object.size(flights)
+```
+
+```{r}
+flights
+
+```
+
+
+```{r}
+flights %>%
+  tally()
+```
+
+```{r}
+flights %>%
+  group_by(month) %>%
+  tally() 
+```
+
+### show_query()
+
+```{r}
+flights %>%
+  group_by(name) %>%
+  tally() %>%
+  show_query()
+```
+
+
+### join tables
+
+```{r}
+airports <- tbl(con, "airports")
+
+```
+
+```{r}
+new_flights <- flights %>%
+  left_join(airports, by = c("dest" = "faa"))
+
+new_flights
+```
+
+### collect()
+
+```{r}
+by_location <- new_flights %>%
+  group_by(name, lon, lat) %>%
+  tally() %>%
+  collect()
+
+by_location 
+```
+
+
+
+### plotting
+
+```{r, fig.width = 10, fig.height = 5}
+library(ggplot2) 
+
+by_location %>%
+  ggplot() +
+  geom_point(aes(x = lon, y= lat, size = n, color = n), alpha = 0.5)
+
+```
+
+### Direct insights
+
+```{r}
+new_flights %>%
+  group_by(name) %>%
+  tally() %>%
+  arrange(desc(n)) %>%  # desc() inside arrange() get the top counts
+  head(10)
+
+```
+
+### pull() command
+
+```{r}
+top_names <- new_flights %>%
+  group_by(name) %>%
+  tally() %>%
+  arrange(desc(n)) %>%
+  head(10) %>% 
+  collect() %>%
+  pull("name")
+
+top_names
+```
+
+### Take advantage of dplyr's laziness
+
+```{r}
+top_flights <- new_flights %>%
+  filter(name %in% top_names)
+
+```
+
+Use `View()` to preview some of the data in the familiar data viewer
+
+```{r}
+top_flights %>%
+  head(1000) %>%
+  collect() %>%
+  View("top_flights")
+```
+
+Easily transition from data manipulation to plotting, without needing to import the data
+
+```{r}
+top_flights %>%
+  group_by(Month) %>%
+  tally() %>%
+  collect() %>%
+  ggplot() +
+    geom_area(aes(x = Month , y = n), fill = "blue", alpha = 0.5)
+  
+```
+
+
+Thanks to the `tidyverse` approach, an entirly new plot can be built by adding one single line, and the data is still summarized inside the database
+
+```{r}
+top_flights %>%
+  filter(distance > 2000) %>%  # Added 
+  group_by(Month) %>%
+  tally() %>%
+  collect() %>%
+  ggplot() +
+    geom_area(aes(x = Month , y = n), fill = "blue", alpha = 0.5)
+  
+```
+
+### Histograms
+
+```{r}
+library(dbplot)
+
+flights %>%
+  dbplot_histogram(arr_delay, binwidth = 20)
+
+```
+## Temporary tables
+
+```{r}
+temp_flights <- new_flights %>%
+  group_by(name) %>%
+  tally() 
+```
+
+```{r}
+temp_flights <- copy_to(con, temp_flights, "temp_flights")
+```
+
+
+```{r}
+temp_flights %>%
+  arrange(desc(n))
+```
+
+```{r}
+dbDisconnect(con)
+```
+
+
+
+

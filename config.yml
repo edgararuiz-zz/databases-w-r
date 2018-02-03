@@ -1,0 +1,10 @@
+default:
+  dw:
+     driver: "SQL Server"
+     server: "localhost\\SQLEXPRESS" 
+     database: "master"
+rsconnect:
+  dw:
+     driver: "SQLServer"
+     server: "production" 
+     database: "master"
