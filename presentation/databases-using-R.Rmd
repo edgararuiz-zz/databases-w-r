@@ -184,11 +184,10 @@ class: subtitle-slide, white, right, center
 
 **Database:** Google BigQuery Public Data 
 
-
 ---
 class: panel-narrow-slide, left
 
-# What to look foward to
+# What to look forward to
 
 --
 ### - Improve existing translations
@@ -206,3 +205,5 @@ class: panel-narrow-slide, left
 class: blank-slide, blue, center, middle
 
 # Thank you!
+
+## rstd.io/db
