@@ -1,0 +1,287 @@
+---
+title: "Austin - 311 Calls"
+resource_files:
+- .httr-oauth
+output: html_notebook
+---
+
+```{r setup, include = FALSE}
+library(DBI)
+library(dbplot)
+library(bigrquery)
+library(dplyr, warn.conflicts = FALSE)
+library(dbplyr, warn.conflicts = FALSE)
+library(modeldb)
+library(leaflet)
+```
+
+## Background
+
+City of Austin 3-1-1 service for Police non-emergency calls.  This helped to reduce the number of calls to 9-1-1 so they could concentrate on those calls where either life and /or property were in danger.
+ 
+ - Link: http://www.austintexas.gov/department/about-3-1-1
+
+## BigQuery 
+
+Google BigQuery provides access to the 3-1-1 data as part of their Public Data project: 	
+`bigquery-public-data:austin_311.311_service_requests`
+
+```{r}
+library(DBI)
+library(bigrquery)
+
+con <- dbConnect(
+  bigquery(),
+  project = "bigquery-public-data",
+  dataset = "austin_311",
+  billing = "rstudio-bigquery-event",
+  use_legacy_sql = FALSE
+)
+```
+
+## dplyr with BigQuery
+
+Instead of importing the entire data set, we just create a pointer to the table inside BigQuery:
+```{r}
+service <- tbl(con, "311_service_requests")
+```
+
+Standard `dplyr` commands work inside BigQuery:
+```{r}
+glimpse(service)
+```
+
+```{r}
+tally(service)
+```
+
+Which are the most common complaints?
+```{r}
+service %>%
+  group_by(complaint_description) %>%
+  tally() %>%
+  arrange(desc(n)) %>%
+  head(10)
+```
+
+Some data cleaning...
+```{r}
+service <- service %>%
+  filter(latitude > 10)
+```
+
+## Visualizations using dbplot, ggplot2 and leaflet
+
+Easily view the location of the service calls without importing all of the data.
+```{r}
+library(dbplot)
+
+complaint <- "Loose Dog"
+
+service %>%
+  filter(complaint_description == complaint) %>%
+  dbplot_raster(longitude, latitude, resolution = 50)
+  
+```
+
+Use `db_computer_raster()` to obtain the pre-calculated squares
+```{r}
+locations <- service %>%
+  filter(complaint_description == complaint) %>% 
+  db_compute_raster(longitude, latitude, resolution = 30)
+
+locations
+```
+
+Use `rlang` for quick functions
+```{r}
+size <- function(df, field) {
+  field <- enquo(field)
+  df %>%
+    arrange(!! field) %>%
+    mutate(diff = !! field - lag(!! field)) %>%
+    filter(diff > 0) %>%
+    summarise(min(diff)) %>%
+    pull() 
+  
+}
+```
+
+Prepare the squares 
+```{r}
+lon_size <- locations %>%
+  size(longitude)
+
+lat_size <- locations %>%
+  size(latitude)
+```
+
+Add the square calculations to `locations`
+```{r}
+sq <- locations %>%
+    mutate(
+    lon1 = longitude,
+    lon2 = longitude + lon_size,
+    lat1 = latitude,
+    lat2 = latitude + lat_size,
+    of_max = `n()` / max(`n()`)
+  ) 
+
+sq
+```
+
+Overlay the squares over a map of Austin using `leaflet`
+```{r, fig.width = 12}
+library(leaflet)
+
+leaflet() %>% 
+  addTiles() %>%
+  addRectangles(
+    sq$lon1, sq$lat1, sq$lon2, sq$lat2
+  )
+```
+
+Make it fancy... Highlight squares based on number of comparative number of calls, and add a popup
+```{r, fig.width = 12}
+library(leaflet)
+
+fancy <- leaflet() %>% 
+  addTiles() %>%
+  addRectangles(
+    sq$lon1, sq$lat1, sq$lon2, sq$lat2,
+    fillOpacity = sq$of_max,
+    fillColor = "red",
+    stroke = FALSE,
+    popup = paste0("<p>Calls: ",  sq$`n()`,"</p>")
+  )
+
+fancy
+```
+
+Where's the Fairmont?
+```{r}
+fancy  %>%
+  addMarkers(lng = -97.7404001, lat = 30.2620562)
+```
+
+## Kmeans with modeldb
+
+Use the dev version 
+```{r, eval = FALSE}
+devtools::install_github("edgararuiz/modeldb")
+```
+
+Calculate k-means inside the database using `simple_kmeans_db()`
+```{r}
+service_kmeans <-  service %>%
+  filter(complaint_description == complaint) %>%
+  simple_kmeans_db(latitude, longitude)
+
+head(service_kmeans, 10)
+```
+
+Preview the final SQL statement that the routine settled on
+```{r}
+show_query(service_kmeans)
+```
+
+Create a local table with the corners of each center
+```{r}
+cr <- service_kmeans %>%
+  group_by(k_longitude, k_latitude) %>%
+  summarise(
+    calls = n(),
+    lat1 = min(latitude, na.rm = TRUE),
+    lat2 = max(latitude, na.rm = TRUE),
+    lon1 = min(longitude, na.rm = TRUE),
+    lon2 = max(longitude, na.rm = TRUE),
+  ) %>%
+  collect()
+  
+cr
+```
+
+Plot against a map
+```{r}
+leaflet() %>% 
+  addTiles() %>%
+  addRectangles(cr$lon1, cr$lat1, cr$lon2, cr$lat2) 
+```
+
+Overlay the raster boxes
+```{r}
+leaflet() %>% 
+  addTiles() %>%
+  addRectangles(cr$lon1, cr$lat1, cr$lon2, cr$lat2) %>%
+  addRectangles(
+    sq$lon1, sq$lat1, sq$lon2, sq$lat2,
+    fillColor = "red",
+    stroke = FALSE,
+    popup = paste0("<p>Calls: ",  sq$`n()`,"</p>")
+  )
+```
+
+## Bringing it all together 
+
+Use `purrr` to run `db_compute_raster()` for each center in the kmeans results
+```{r}
+library(purrr)
+
+cents <- c("center_1", "center_2", "center_3")
+
+by_centers <- cents %>%
+  map_df(~{
+    bc <- service_kmeans %>% 
+      filter(k_center == .x) %>%
+      db_compute_raster(longitude, latitude, resolution =  20) %>%
+      mutate(center = .x)
+    
+    lon_size <- bc %>%
+      size(longitude)
+
+    lat_size <- bc %>%
+      size(latitude)
+    
+    bc %>% 
+      mutate(
+        lon1 = longitude,
+        lon2 = longitude + lon_size,
+        lat1 = latitude,
+        lat2 = latitude + lat_size,
+        of_max = `n()` / max(`n()`)
+      ) 
+    })
+```
+
+Change the color of each center
+```{r}
+bc <- by_centers %>%
+  mutate(color = case_when(
+    center == "center_1" ~ "red",
+    center == "center_2" ~ "blue",
+    center == "center_3" ~ "green",
+    TRUE ~ "white"
+  ))
+```
+
+Map the two layers together
+```{r}
+leaflet() %>% 
+  addTiles()  %>%
+  addRectangles(
+    cr$lon1, cr$lat1, cr$lon2, cr$lat2, 
+    fillOpacity = 0
+    ) %>%
+  addRectangles(
+    bc$lon1, bc$lat1, bc$lon2, bc$lat2,
+    fillColor = bc$color,
+    fillOpacity = 0.5,
+    stroke = FALSE,
+    popup = paste0("<p>Calls: ",  bc$`n()`,"</p>")
+  )
+```
+
+```{r}
+dbDisconnect(con)
+```
+

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Databases using R</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Edgar Ruiz" />
+    <meta name="date" content="2019-01-17" />
+    <script src="databases-using-R_files/htmlwidgets/htmlwidgets.js"></script>
+    <link href="databases-using-R_files/vis/vis.css" rel="stylesheet" />
+    <script src="databases-using-R_files/vis/vis.min.js"></script>
+    <script src="databases-using-R_files/visNetwork-binding/visNetwork.js"></script>
+    <script src="databases-using-R_files/r2d3-render/r2d3-render.js"></script>
+    <script src="databases-using-R_files/webcomponents/webcomponents.js"></script>
+    <script src="databases-using-R_files/r2d3-binding/r2d3.js"></script>
+    <script src="databases-using-R_files/d3v5/d3.min.js"></script>
+    <link rel="stylesheet" href="include\rstudio.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Databases using R
+## The Latest
+### Edgar Ruiz
+### 01/17/2019
+
+---
+
+
+
+
+
+class: subtitle-slide, blue, top, left
+# Agenda
+
+--
+
+4 ways Databases+R is better today
+
+--
+
+Techniques to use in the field
+
+--
+
+The future
+
+---
+
+class: subtitle-slide, white, middle, center
+
+# 4 ways Databases+R is better today
+
+--
+## 1. Packages
+
+--
+## 2. Getting help
+
+--
+## 3. Products
+
+--
+## 4. Tools
+
+
+---
+
+class: blank-slide, blue, center, middle
+
+# Packages
+### 4 ways Databases+R is better today
+
+---
+
+class: panel-narrow-slide, left
+
+# Which packages?
+
+### Quick search of CRAN packages that implement the database and R interface and is `DBI` compliant:
+
+--
+### - Packages the depend on `DBI`, `odbc` or `dbplyr`
+
+--
+### - In their title or description mentions the word "database" or "quer.." 
+
+---
+
+class: panel-narrow-slide, left
+
+
+
+
+# 61 Dependent Packages
+
+<div id="htmlwidget-7534c5652775b0c450e8" style="width:1008px;height:432px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7534c5652775b0c450e8">{"x":{"nodes":{"id":["anchoredDistr","arkdb","BIEN","bigrquery","biolink","cdata","condusco","cRegulome","DatabaseConnector","dbfaker","DBI","dbparser","dbplot","dbplyr","dbx","dplyr.teradata","drfit","emuR","etl","ETLUtils","filehashSQLite","gmDatabase","implyr","liteq","mdsr","Mega2R","MetamapsDB","mlbgameday","modeldb","MonetDBLite","ODB","odbc","ora","PhysicalActivity","pitchRx","PivotalR","pointblank","poplite","postGIStools","RClickhouse","redcapAPI","replyr","restez","RGreenplum","RMariaDB","rpostgis","rpostgisLT","RPostgres","RPostgreSQL","RPresto","rqdatatable","rquery","RSQLite","sergeant","sqldf","sqlscore","storr","taxizedb","tidypredict","tigreBrowserWriter","TScompare","TSdbi","TSsdmx","TSsql"],"label":["anchoredDistr","arkdb","BIEN","bigrquery","biolink","cdata","condusco","cRegulome","DatabaseConnector","dbfaker","DBI","dbparser","dbplot","dbplyr","dbx","dplyr.teradata","drfit","emuR","etl","ETLUtils","filehashSQLite","gmDatabase","implyr","liteq","mdsr","Mega2R","MetamapsDB","mlbgameday","modeldb","MonetDBLite","ODB","odbc","ora","PhysicalActivity","pitchRx","PivotalR","pointblank","poplite","postGIStools","RClickhouse","redcapAPI","replyr","restez","RGreenplum","RMariaDB","rpostgis","rpostgisLT","RPostgres","RPostgreSQL","RPresto","rqdatatable","rquery","RSQLite","sergeant","sqldf","sqlscore","storr","taxizedb","tidypredict","tigreBrowserWriter","TScompare","TSdbi","TSsdmx","TSsql"],"shape":["ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","circle","ellipse","ellipse","circle","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","circle","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse","ellipse"],"color":["#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ff6600","#ffffcc","#ffffcc","#ff9900","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#cc6633","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc","#ffffcc"]},"edges":{"to":["anchoredDistr","arkdb","arkdb","BIEN","bigrquery","bigrquery","biolink","cdata","condusco","cRegulome","DatabaseConnector","dbfaker","dbparser","dbparser","dbplot","dbplyr","dbx","dbx","dplyr.teradata","dplyr.teradata","dplyr.teradata","drfit","drfit","emuR","etl","etl","ETLUtils","filehashSQLite","filehashSQLite","gmDatabase","implyr","implyr","implyr","liteq","mdsr","mdsr","Mega2R","MetamapsDB","mlbgameday","mlbgameday","modeldb","modeldb","MonetDBLite","MonetDBLite","ODB","odbc","ora","PhysicalActivity","pitchRx","PivotalR","pointblank","poplite","poplite","postGIStools","RClickhouse","RClickhouse","redcapAPI","replyr","restez","RGreenplum","RMariaDB","rpostgis","rpostgisLT","RPostgres","RPostgreSQL","RPresto","RPresto","rqdatatable","rquery","RSQLite","sergeant","sergeant","sqldf","sqlscore","storr","taxizedb","taxizedb","tidypredict","tidypredict","tigreBrowserWriter","TScompare","TSdbi","TSsdmx","TSsql"],"from":["DBI","DBI","dbplyr","DBI","DBI","dbplyr","DBI","DBI","DBI","DBI","DBI","DBI","DBI","odbc","dbplyr","DBI","DBI","odbc","DBI","odbc","dbplyr","odbc","DBI","DBI","DBI","dbplyr","DBI","DBI","DBI","DBI","dbplyr","DBI","odbc","DBI","DBI","dbplyr","DBI","DBI","DBI","dbplyr","dbplyr","DBI","DBI","dbplyr","DBI","DBI","DBI","DBI","DBI","DBI","DBI","dbplyr","DBI","DBI","dbplyr","DBI","DBI","DBI","DBI","DBI","DBI","DBI","DBI","DBI","DBI","DBI","dbplyr","DBI","DBI","DBI","DBI","dbplyr","DBI","dbplyr","DBI","DBI","dbplyr","dbplyr","DBI","DBI","DBI","DBI","DBI","DBI"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"layout":{"randomSeed":2},"interaction":{"navigationButtons":true}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+
+---
+class: panel-narrow-slide, left
+
+
+
+
+# 87% have been updated since 2017
+
+<div id="htmlwidget-92208568984ca45ba830" style="width:1008px;height:432px;" class="r2d3 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-92208568984ca45ba830">{"x":{"data":{"yr":[2012,2014,2015,2016,2017,2018,2019],"n":[2,1,2,3,12,35,8],"label":["2012","2014","2015","2016","2017","2018","2019"],"x":[2012,2014,2015,2016,2017,2018,2019],"y":[2,1,2,3,12,35,8]},"type":"data.frame","container":"svg","options":null,"script":"var d3Script = function(d3, r2d3, data, svg, width, height, options, theme, console) {\nthis.d3 = d3;\n\nsvg = d3.select(svg.node());\n/* R2D3 Source File:  col_plot.js */\n// !preview r2d3 data=data.frame(y = c(5000,100,3000,4000), x = c(1,2,4,5), label = c('jan', 'feb', 'mar', 'apr'))\n\nvar layer_left   = 0.01;\n    layer_top    = 0.1;\n    layer_height = 0.9;\n    layer_width  = 0.97;\n\nfunction svg_height() {return parseInt(svg.style('height'))}\nfunction svg_width() {return parseInt(svg.style('width'))}\nfunction actual_max() {return d3.max(data, function (d) {return d.y; }); }\nfunction col_width()  {return svg_width()  / data.length * layer_width;}\nfunction col_heigth() {return (svg_height() /actual_max()) * layer_height; }\n\nfunction col_top()  {return svg_height() * layer_top; }\nfunction col_left() {return svg_width()  * layer_left;}\n\nvar cols = svg.selectAll('rect').data(data);\n\ncols.enter().append('rect')\n  .attr('height', function(d) {return (d.y * col_heigth()); })\n  .attr('width', col_width())\n  .attr('x', function(d, i) {return (i * col_width()) + (svg_width()* layer_left); })\n  .attr('y', function(d) {return col_top() + ((actual_max() - d.y) * col_heigth()); })\n  .attr('fill', '#009E73')\n  .attr('opacity', 0.5)\n  .attr('stroke', 'white')\n  .attr('d', function(d) { return d.x; })\n  .on(\"click\", function(){\n    Shiny.setInputValue(\n      \"column_clicked\", \n      d3.select(this).attr(\"d\"),\n      {priority: \"event\"}\n    );\n  })    \n  .on(\"mouseenter\", function(){\n      d3.select(this)\n        .attr('opacity', 1)\n        .attr('fill', '#ffb14e');  \n  })\n  .on(\"mouseleave\", function(){\n      d3.select(this)\n        .attr('opacity', 0.5)\n        .attr('fill', '#009E73');\n  });      \n      \ncols.exit().remove();\n\n\n// Identity labels\n\nvar txt = svg.selectAll('text').data(data);\n\ntxt.enter().append('text')\n    .attr('x', function(d, i) {return (i * col_width()) + (svg_width()* layer_left) + (col_width() * 0.5); })\n    .attr('y', function(d) {return svg_height()* 0.98;})\n    .style('font-size', '20px') \n    .text(function(d) {return d.label;})\n    .style('font-family', 'sans-serif')\n    .attr('text-anchor', 'middle');\n      \n      \ntxt.exit().remove();\n\n// Numeric labels\n\nvar totals = svg.selectAll('totals').data(data);\n\ntotals.enter().append('text')\n      .attr('x', function(d, i) {return (i * col_width()) + (svg_width()* layer_left) + (col_width() * 0.5); })\n      .attr('y', function(d) {return (col_top() * 0.6) + ((actual_max() - d.y) * col_heigth()); })\n      .attr('text-anchor', 'middle')\n      .style('font-size', '30px') \n      .style('font-family', 'sans-serif')\n      .text(function(d) {return d.y; });  \n      \ntotals.exit().remove();\n};","style":null,"version":5,"theme":{"default":{"background":"#FFFFFF","foreground":"#000000"},"runtime":null},"useShadow":true},"evals":[],"jsHooks":[]}</script>
+
+---
+
+class: panel-narrow-slide, left
+
+# Features, fixes &amp; improvements
+
+.pull-left[
+- `dbplyr`: supports `stringr` functions
+- `dbplyr`: 145 commits since '18, 98 in '19
+- `corrr`: supports databases
+- `tidypredict`: supports MARS models
+]
+.pull-right[![](images/sql-script.png)]
+---
+
+class: blank-slide, blue, center, middle
+
+# Getting help
+### 4 ways Databases+R is better today
+
+---
+class: panel-narrow-slide, left
+
+# db.rstudio.com
+.pull-left[Best practices for:
+  - Connections
+  - Security
+  - Visualizations &amp; Shiny
+  - Interacting with DBs
+  ]
+.pull-right[![](images/db.png)]
+
+.footnote[https://db.rstudio.com/]
+
+---
+class: panel-narrow-slide, left
+
+# community.rstudio.com
+
+.pull-left[
+  ## Ask a question, get help from us and practicing experts.
+  ]
+.pull-right[![](images/community.png)]
+
+.footnote[https://community.rstudio.com/tags/database/l/latest]
+---
+
+class: blank-slide, blue, center, middle
+
+# Products
+### 4 ways Databases+R is better today
+
+---
+class: panel-narrow-slide, left
+
+# Explore databases in RStudio
+
+.pull-left[Since 1.1, we can explore database object and even preview the first 1K records right from the IDE!
+  ]
+.pull-right[![](images/features.png)]
+
+---
+class: panel-narrow-slide, left
+
+# RStudio Pro Drivers
+
+.pull-left[## Implementing RStudio products on the Enterprise? We include Professional ODBC drivers with our Professional products.
+  ]
+.pull-right[![](images/databases.png)]
+
+---
+class: panel-narrow-slide, left
+
+# New! SQL scripts in RStudio
+
+.pull-left[
+  Starting in 1.2, SQL scripts can be run inside the RStudio IDE
+  ]
+.pull-right[![](images/sql-script.png)]
+
+
+---
+class: panel-narrow-slide, left
+
+# New! RStudio Connect
+
+.pull-left[
+  ## Starting with version 1.6, RStudio Connect allows R Environment Variables to be saved at the application level. The variables are encrypted on-disk, and in-memory.
+  ]
+.pull-right[ 
+![](images/rsc-env-variables.png)
+]
+---
+
+class: blank-slide, blue, center, middle
+
+# Tools
+### 4 ways Databases+R is better today
+
+---
+class: panel-narrow-slide, left
+
+# `tidyveval` &amp; recursion
+
+.pull-left[
+  Users are implementing solutions using `purrr` and `rlang`
+  ]
+.pull-right[![](images/adv.PNG)]
+---
+
+class: subtitle-slide, white, middle, center
+
+# Techniques to use in the field
+
+--
+## Demo
+
+---
+
+class: subtitle-slide, white, middle, center
+
+# The future
+
+---
+class: panel-narrow-slide, left
+
+# What to look foward to
+
+--
+### - Improve existing translations
+
+--
+### - More base translations (e.g: Natezza)
+
+--
+### - Improve back end packages (SQLite, monetDB, BigQuery)
+
+--
+### - More R-like functionality (via dbplyr or other packages) 
+
+---
+class: blank-slide, blue, center, middle
+
+# Thank you!
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"countIncrementalSlides": true,
+"highlightLines": true,
+"highlightStyle": "github",
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
