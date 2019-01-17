@@ -1,7 +1,7 @@
 ---
 title: "Databases using R - The latest"
-subtitle: "github.com/edgararuiz/databases-w-r"
-
+author: Edgar Ruiz 
+date: "twitter:@theotheredgar github:edgararuiz"
 output:
   xaringan::moon_reader:
     css: "include/rstudio.css"
@@ -147,7 +147,7 @@ class: panel-narrow-slide, left
   ]
 .pull-right[![](images/adv.PNG)]
 ---
-# The database-verse is expanding!
+# The universe is expanding!
 
 `r nrow(nodes) - 3` packages are DB themed & depend on DBI and/or dbplyr
 
@@ -172,6 +172,17 @@ last %>%
 class: subtitle-slide, white, middle, center
 
 # Demo
+
+---
+class: subtitle-slide, white, right, center
+
+**Techniques for:** Connecting, exploring and visualizing data in databases
+
+**Packages:** dplyr, dbplyr, dbplot, ggplot2, leaflet, purrr & rlang
+
+**Data:** City of Austin 3-1-1 service for Police non-emergency calls.
+
+**Database:** Google BigQuery Public Data 
 
 
 ---

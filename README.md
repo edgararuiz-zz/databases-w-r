@@ -1,7 +1,13 @@
 Databases with R
 ================
 
-Materials and presentation deck are available in their respective folders.
+The source code of the RMarkdown presentation deck and RNotebook are available in the `presentation` and `demo` folders respectively.
+
+Rendered versions of the materials can be found here: 
+
+- Presentation: 
+
+- Demo RNotebook: https://beta.rstudioconnect.com/content/4534/austin-311-calls.nb.html
 
 ## Previous versions
 

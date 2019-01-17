@@ -58,10 +58,8 @@ tally(service)
 Which are the most common complaints?
 ```{r}
 service %>%
-  group_by(complaint_description) %>%
-  tally() %>%
-  arrange(desc(n)) %>%
-  head(10)
+  count(complaint_description) %>%
+  top_n(10)
 ```
 
 Some data cleaning...
@@ -131,7 +129,7 @@ sq
 ```
 
 Overlay the squares over a map of Austin using `leaflet`
-```{r, fig.width = 12}
+```{r, fig.width = 8}
 library(leaflet)
 
 leaflet() %>% 
@@ -142,7 +140,7 @@ leaflet() %>%
 ```
 
 Make it fancy... Highlight squares based on number of comparative number of calls, and add a popup
-```{r, fig.width = 12}
+```{r, fig.width = 8}
 library(leaflet)
 
 fancy <- leaflet() %>% 
@@ -159,7 +157,7 @@ fancy
 ```
 
 Where's the Fairmont?
-```{r}
+```{r, fig.width = 8}
 fancy  %>%
   addMarkers(lng = -97.7404001, lat = 30.2620562)
 ```
@@ -202,14 +200,14 @@ cr
 ```
 
 Plot against a map
-```{r}
+```{r, fig.width = 8}
 leaflet() %>% 
   addTiles() %>%
   addRectangles(cr$lon1, cr$lat1, cr$lon2, cr$lat2) 
 ```
 
 Overlay the raster boxes
-```{r}
+```{r, fig.width = 8}
 leaflet() %>% 
   addTiles() %>%
   addRectangles(cr$lon1, cr$lat1, cr$lon2, cr$lat2) %>%
@@ -265,7 +263,7 @@ bc <- by_centers %>%
 ```
 
 Map the two layers together
-```{r}
+```{r, fig.width = 8}
 leaflet() %>% 
   addTiles()  %>%
   addRectangles(
