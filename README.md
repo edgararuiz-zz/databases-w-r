@@ -9,6 +9,8 @@ Rendered versions of the materials can be found here:
 
 - Demo RNotebook: https://beta.rstudioconnect.com/content/4534/austin-311-calls.nb.html
 
+- Video from the RStudio Conference 2019: https://resources.rstudio.com/rstudio-conf-2019/databases-using-r-the-latest
+
 ## Previous versions
 
 2018 RStudio Conference - Best Practices of working with Databases - https://github.com/edgararuiz/databases-w-r/tree/1.0

@@ -82,50 +82,14 @@ service %>%
   
 ```
 
-Use `db_computer_raster()` to obtain the pre-calculated squares
+Use the new `db_computer_raster2()` function to obtain the pre-calculated squares, with their limits included.
 ```{r}
-locations <- service %>%
+calls <- service %>%
   filter(complaint_description == complaint) %>% 
-  db_compute_raster(longitude, latitude, resolution = 30)
+  db_compute_raster2(longitude, latitude, resolution = 30) %>%
+  mutate(of_max = `n()` / max(`n()`))
 
-locations
-```
-
-Use `rlang` for quick functions
-```{r}
-size <- function(df, field) {
-  field <- enquo(field)
-  df %>%
-    arrange(!! field) %>%
-    mutate(diff = !! field - lag(!! field)) %>%
-    filter(diff > 0) %>%
-    summarise(min(diff)) %>%
-    pull() 
-  
-}
-```
-
-Prepare the squares 
-```{r}
-lon_size <- locations %>%
-  size(longitude)
-
-lat_size <- locations %>%
-  size(latitude)
-```
-
-Add the square calculations to `locations`
-```{r}
-sq <- locations %>%
-    mutate(
-    lon1 = longitude,
-    lon2 = longitude + lon_size,
-    lat1 = latitude,
-    lat2 = latitude + lat_size,
-    of_max = `n()` / max(`n()`)
-  ) 
-
-sq
+calls
 ```
 
 Overlay the squares over a map of Austin using `leaflet`
@@ -135,22 +99,27 @@ library(leaflet)
 leaflet() %>% 
   addTiles() %>%
   addRectangles(
-    sq$lon1, sq$lat1, sq$lon2, sq$lat2
+    calls$longitude, 
+    calls$latitude, 
+    calls$longitude_2, 
+    calls$latitude_2
   )
 ```
 
 Make it fancy... Highlight squares based on number of comparative number of calls, and add a popup
 ```{r, fig.width = 8}
-library(leaflet)
 
 fancy <- leaflet() %>% 
   addTiles() %>%
   addRectangles(
-    sq$lon1, sq$lat1, sq$lon2, sq$lat2,
-    fillOpacity = sq$of_max,
+    calls$longitude, 
+    calls$latitude, 
+    calls$longitude_2, 
+    calls$latitude_2,
+    fillOpacity = calls$of_max,
     fillColor = "red",
     stroke = FALSE,
-    popup = paste0("<p>Calls: ",  sq$`n()`,"</p>")
+    popup = paste0("<p>Calls: ",  calls$`n()`,"</p>")
   )
 
 fancy
@@ -163,11 +132,6 @@ fancy  %>%
 ```
 
 ## Kmeans with modeldb
-
-Use the dev version 
-```{r, eval = FALSE}
-devtools::install_github("edgararuiz/modeldb")
-```
 
 Calculate k-means inside the database using `simple_kmeans_db()`
 ```{r}
@@ -212,11 +176,15 @@ leaflet() %>%
   addTiles() %>%
   addRectangles(cr$lon1, cr$lat1, cr$lon2, cr$lat2) %>%
   addRectangles(
-    sq$lon1, sq$lat1, sq$lon2, sq$lat2,
+    calls$longitude, 
+    calls$latitude, 
+    calls$longitude_2, 
+    calls$latitude_2,
     fillColor = "red",
     stroke = FALSE,
-    popup = paste0("<p>Calls: ",  sq$`n()`,"</p>")
-  )
+    popup = paste0("<p>Calls: ",  calls$`n()`,"</p>")
+  )  
+  
 ```
 
 ## Bringing it all together 
@@ -231,23 +199,11 @@ by_centers <- cents %>%
   map_df(~{
     bc <- service_kmeans %>% 
       filter(k_center == .x) %>%
-      db_compute_raster(longitude, latitude, resolution =  20) %>%
-      mutate(center = .x)
-    
-    lon_size <- bc %>%
-      size(longitude)
-
-    lat_size <- bc %>%
-      size(latitude)
-    
-    bc %>% 
+      db_compute_raster2(longitude, latitude, resolution =  20) %>%
       mutate(
-        lon1 = longitude,
-        lon2 = longitude + lon_size,
-        lat1 = latitude,
-        lat2 = latitude + lat_size,
-        of_max = `n()` / max(`n()`)
-      ) 
+        of_max = `n()` / max(`n()`),
+        center = .x
+        )
     })
 ```
 
@@ -260,18 +216,20 @@ bc <- by_centers %>%
     center == "center_3" ~ "green",
     TRUE ~ "white"
   ))
+
+bc
 ```
 
 Map the two layers together
 ```{r, fig.width = 8}
 leaflet() %>% 
   addTiles()  %>%
+  addRectangles(cr$lon1, cr$lat1, cr$lon2, cr$lat2) %>%
   addRectangles(
-    cr$lon1, cr$lat1, cr$lon2, cr$lat2, 
-    fillOpacity = 0
-    ) %>%
-  addRectangles(
-    bc$lon1, bc$lat1, bc$lon2, bc$lat2,
+    bc$longitude, 
+    bc$latitude, 
+    bc$longitude_2, 
+    bc$latitude_2,
     fillColor = bc$color,
     fillOpacity = 0.5,
     stroke = FALSE,
