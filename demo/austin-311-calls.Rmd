@@ -39,7 +39,7 @@ con <- dbConnect(
 )
 ```
 
-## dplyr with BigQuery
+## BigQuery with dplyr
 
 Instead of importing the entire data set, we just create a pointer to the table inside BigQuery:
 ```{r}
